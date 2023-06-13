@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 from typing import Tuple, Iterator
 
-from labml import tracker, monit, experiment
+from labml import tracker, monit, experiment, lab
 from labml.configs import BaseConfigs
 from labml_helpers.device import DeviceConfigs
 from labml_helpers.train_valid import ModeState, hook_model_outputs
@@ -295,7 +295,7 @@ def main():
         'log_generated_interval': 200
     })
 
-    configs.init('D:\Documents\Code\Python\Waifu-GAN\data\img_align_celeba')
+    configs.init(str(lab.get_data_path() / 'stylegan'))
 
     experiment.add_pytorch_models(mapping_network=configs.mapping_network,
                                   generator=configs.generator,
