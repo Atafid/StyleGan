@@ -38,8 +38,8 @@ class Configs(BaseConfigs):
     device: torch.device = DeviceConfigs()
 
     d_latent: int = 512
-    batch_size: int = 32
-    img_size: int = 32
+    batch_size: int = 16
+    img_size: int = 64
 
     dataset: Dataset
     dataset_path: str
@@ -61,7 +61,7 @@ class Configs(BaseConfigs):
     learning_rate: float = 1e-3
     mn_learning_rate: float = 1e-5
     adam_betas: Tuple[float, float] = (0.0, 0.99)
-    training_steps: int = 1000
+    training_steps: int = 90000
 
     style_mix_prob: float = 0.9
 
@@ -78,7 +78,7 @@ class Configs(BaseConfigs):
     lazy_path_penalty_interval: int = 32
     lazy_path_penalty_after: int = 5000
 
-    save_checkpoint_interval: int = 2000
+    save_checkpoint_interval: int = 1000
 
     log_layer_outputs: bool = False
     mode = ModeState()
@@ -251,7 +251,7 @@ class Configs(BaseConfigs):
         if ((index+1) % self.save_checkpoint_interval == 0):
             experiment.save_checkpoint()
 
-        if ((index+1) % 50 == 0):
+        if ((index+1) % 3000 == 0):
             img, w = self.generate_images(self.batch_size)
 
             #f, axarr = plt.subplots(4, 8)
@@ -263,7 +263,7 @@ class Configs(BaseConfigs):
             #     axarr[int(i/8)][i % 8].imshow(real_img)
             #     axarr[int(i/8)][i % 8].axis("off")
 
-            f, axarr = plt.subplots(4, 8)
+            f, axarr = plt.subplots(2, 8)
 
             for i in range(img.shape[0]):
                 gen_img = np.transpose(
@@ -305,34 +305,48 @@ def main():
         configs.train()
 
 
+def continue_train():
+    experiment.create(name="waifu-gan")
+
+    configs = Configs()
+
+    experiment.configs(configs, {
+        'device.cuda_device': 0,
+        'img_size': 64,
+        'log_generated_interval': 200
+    })
+
+    configs.init(str(lab.get_data_path() / 'stylegan'))
+
+    configs.discriminator.load_state_dict(
+        torch.load("best_model/discriminator.pth"))
+    configs.mapping_network.load_state_dict(
+        torch.load("best_model/mapping_network.pth"))
+    configs.generator.load_state_dict(torch.load("best_model/generator.pth"))
+
+    experiment.add_pytorch_models(mapping_network=configs.mapping_network,
+                                  generator=configs.generator,
+                                  discriminator=configs.discriminator)
+
+    with (experiment.start()):
+        configs.train()
+
+
 def generate_new_image():
     configs = Configs()
 
-    configs.init('D:\Documents\Code\Python\Waifu-GAN\data\img_align_celeba')
+    configs.init(str(lab.get_data_path() / 'stylegan'))
 
     configs.mapping_network.load_state_dict(
-        torch.load("mapping_network.pth"))
-    configs.generator.load_state_dict(torch.load("generator.pth"))
+        torch.load("best_model/mapping_network.pth"))
+    configs.generator.load_state_dict(torch.load("best_model/generator.pth"))
 
     img, w = configs.generate_images(configs.batch_size)
 
-    f, axarr = plt.subplots(4, 8)
-
-    for i in range(32):
-        real_img = configs.dataset.__getitem__(i)
-        real_img = np.transpose(real_img.detach().cpu().numpy(), (1, 2, 0))
-
-        if (i == 0):
-            print(real_img)
-
-        axarr[int(i/8)][i % 8].imshow(real_img)
-        axarr[int(i/8)][i % 8].axis("off")
+    f, axarr = plt.subplots(2, 8)
 
     for i in range(img.shape[0]):
         gen_img = np.transpose(img[i].detach().cpu().numpy(), (1, 2, 0))
-
-        if (i == 0):
-            print(gen_img)
 
         axarr[int(i/8)][i % 8].imshow(gen_img)
         axarr[int(i/8)][i % 8].axis("off")
@@ -341,9 +355,15 @@ def generate_new_image():
 
 
 if (__name__ == '__main__'):
-    train = input("Train new model (y/n) : ")
+    train = input("Train model (y/n) : ")
 
     if (train == "y"):
-        main()
+        new = input("New model (y/n) : ")
+
+        if (new == "y"):
+            main()
+        else:
+            continue_train()
+
     else:
         generate_new_image()
