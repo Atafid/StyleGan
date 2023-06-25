@@ -88,4 +88,6 @@ db.sqlite3
 
 data/
 .labml.yaml
-logs/    
+logs/
+.vscode/   
+generated/ 
