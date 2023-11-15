@@ -90,4 +90,4 @@ data/
 .labml.yaml
 logs/
 .vscode/   
-generated/ 
+generated/

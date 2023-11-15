@@ -4,20 +4,19 @@ import numpy as np
 import tkinter as tk
 from super_image import ImageLoader, EdsrModel
 from labml import experiment, lab
-import os
 
 from src.configs import Configs
 
 
 def train_new_model():
-    experiment.create(name="waifu-gan")
+    experiment.create(name="waifu-gan2")
 
     configs = Configs()
 
     experiment.configs(configs, {
         'device.cuda_device': 0,
         'img_size': 64,
-        'log_generated_interval': 200
+        'log_generated_interval': 400
     })
 
     configs.init(str(lab.get_data_path() / 'stylegan'))
@@ -81,11 +80,13 @@ def generate_new_images(configs):
     img, w = configs.generate_images(configs.batch_size)
 
     pil_images = list(map(convert_generated_images, img))
-    pil_scaled_images = list(
-        map(lambda img: upscale_image(img, 4), pil_images))
+    # pil_scaled_images = list(
+    #    map(lambda img: upscale_image(img, 1), pil_images))
 
-    for i in range(len(pil_scaled_images)):
-        pil_scaled_images[i].save("generated/"+str(i)+".jpg")
+    # for i in range(len(pil_scaled_images)):
+    # pil_scaled_images[i].save("generated/"+str(i)+".jpg")
+    for i in range(len(pil_images)):
+        pil_images[i].save("generated/"+str(i)+".jpg")
 
 
 def load_images(canvas, batch_size):
@@ -100,7 +101,7 @@ def load_images(canvas, batch_size):
         row = i//4
         col = i % 4
 
-        canvas.create_image(col*256+130, row*256+130, image=tk_images[i])
+        canvas.create_image(col*64+32, row*64+32, image=tk_images[i])
 
 
 def update_images(configs, canvas, nb_img_display):
@@ -127,9 +128,9 @@ def init_generation():
     configs.generator.load_state_dict(torch.load("best_model/generator.pth"))
 
     root = tk.Tk()
-    root.geometry("1200x850")
+    root.geometry("512x350")
 
-    canvas = tk.Canvas(root, width=1024, height=768, bg="white")
+    canvas = tk.Canvas(root, width=256, height=256, bg="white")
     canvas.pack()
 
     nb_img_display = tk.DoubleVar(value=1)

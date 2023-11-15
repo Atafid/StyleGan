@@ -1,0 +1,10 @@
+torch
+PIL
+numpy
+tkinter 
+super_image 
+labml 
+torchvision
+pathlib
+labml_helpers
+labml_nn
