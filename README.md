@@ -1,6 +1,6 @@
 # Anime StyleGAN Project (2023)
 
-![Language](https://img.shields.io/badge/Language-Python)
+![Language](https://img.shields.io/badge/Language-Python-f2cb1b)
 ![Open Source](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)
 
 ## Overview
