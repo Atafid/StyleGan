@@ -57,7 +57,7 @@ This will launch a graphical interface where you can experiment with generating 
 - `utils.py`: Utility functions for data processing and model training.
 - `requirements.txt`: List of dependencies.
 
-## Generated Images Example
+<!-- ## Generated Images Example
 
 <p align="center">
 	<img src="ressources/img/game.JPG" width="400">
@@ -65,7 +65,7 @@ This will launch a graphical interface where you can experiment with generating 
 
 <p align="center">
 	<img src="ressources/img/move.PNG" width="400">
-</p>
+</p> -->
 
 ## Credits
 
