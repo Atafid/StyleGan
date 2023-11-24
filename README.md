@@ -57,15 +57,12 @@ This will launch a graphical interface where you can experiment with generating 
 - `utils.py`: Utility functions for data processing and model training.
 - `requirements.txt`: List of dependencies.
 
-<!-- ## Generated Images Example
+## Generated Images Example
 
 <p align="center">
-	<img src="ressources/img/game.JPG" width="400">
+	<img src="resources/screenshots/example.PNG" width="400">
+	<h6 align="center">Example of 64x64 generation after 50 000 epochs of training.</h6>
 </p>
-
-<p align="center">
-	<img src="ressources/img/move.PNG" width="400">
-</p> -->
 
 ## Credits
 
